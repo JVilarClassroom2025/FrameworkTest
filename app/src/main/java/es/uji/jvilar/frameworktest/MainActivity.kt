@@ -35,6 +35,7 @@ class MainActivity : GameActivity(), TicTacToeView, IEventProcessor {
 
     private var xReset = 0f
     private var yReset = 0f
+    private var yMessage = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +97,8 @@ class MainActivity : GameActivity(), TicTacToeView, IEventProcessor {
         graphics = Graphics(width, height)
         with(transformation) {
             xReset = col2X(1)
-            yReset = row2Y(4)
+            yReset = row2Y(4) - 0.25f * ballSide
+            yMessage = row2Y(-2) + ballSide
             graphics.setTextSize((0.8f * ballSide).toInt())
             graphics.setTextColor(Color.BLACK)
         }
@@ -127,8 +129,8 @@ class MainActivity : GameActivity(), TicTacToeView, IEventProcessor {
             Assets.redBall
         else
             Assets.blueBall
-        graphics.drawText(col2X(0), row2Y(-2) + 0.75f * ballSide, "Turn:")
-        graphics.drawBitmap(asset, col2X(2), row2Y(-2))
+        graphics.drawText(col2X(0), yMessage, "Turn:")
+        graphics.drawBitmap(asset, col2X(2), yMessage - 0.75f * ballSide)
     }
 
     private fun drawBoard() = with(transformation) {
@@ -165,15 +167,15 @@ class MainActivity : GameActivity(), TicTacToeView, IEventProcessor {
         if (!viewModel.isEnded)
             return
         if (viewModel.winner == TicTacToeViewModel.CellColor.EMPTY) {
-            graphics.drawText(col2X(0), row2Y(-2) + 0.75f * ballSide, "Draw!")
+            graphics.drawText(col2X(0), yMessage, "Draw!")
             return
         }
         val asset = if (viewModel.winner == TicTacToeViewModel.CellColor.RED)
             Assets.redBall
         else
             Assets.blueBall
-        graphics.drawText(col2X(1), row2Y(-2) + 0.75f * ballSide, "Wins!")
-        graphics.drawBitmap(asset, col2X(0), row2Y(-2))
+        graphics.drawText(col2X(1), yMessage, "Wins!")
+        graphics.drawBitmap(asset, col2X(0), yMessage - 0.75f * ballSide)
 
         val winnerCells = viewModel.winnerCells
         val row0 = winnerCells[0][0]
